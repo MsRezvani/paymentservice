@@ -1,4 +1,4 @@
-package com.digipay.paymentservice.paymentservice.Service;
+package com.digipay.paymentservice.paymentservice.service;
 
 import com.digipay.paymentservice.paymentservice.exception.ResourceNotFoundException;
 import com.digipay.paymentservice.paymentservice.model.Cart;
@@ -7,7 +7,6 @@ import com.digipay.paymentservice.paymentservice.model.Transaction;
 import com.digipay.paymentservice.paymentservice.repository.ReportTransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 public class ReportTransactionService {
 
     private final ReportTransactionRepository reportTransactionRepository;
-    private final CartService cartService;
+    private final ICardService cartService;
     private final MemberService memberService;
 
     public Map<PaymentProcessorResponse.PaymentResponseStatus, List<Transaction>> getReport(

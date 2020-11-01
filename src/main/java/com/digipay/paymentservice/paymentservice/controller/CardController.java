@@ -1,8 +1,8 @@
 package com.digipay.paymentservice.paymentservice.controller;
 
-import com.digipay.paymentservice.paymentservice.Service.CartService;
+import com.digipay.paymentservice.paymentservice.service.ICardService;
 import com.digipay.paymentservice.paymentservice.exception.ValidationsException;
-import com.digipay.paymentservice.paymentservice.model.Cart;
+import com.digipay.paymentservice.paymentservice.model.Card;
 import com.digipay.paymentservice.paymentservice.model.PaymentDetails;
 import com.digipay.paymentservice.paymentservice.model.PaymentProcessorResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +20,12 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/v1/members/{memberNumber}/carts",
+@RequestMapping(value = "/api/v1/members/{memberNumber}/cards",
         produces = {"application/json"}
 )
-public class CartController {
+public class CardController {
 
-    private final CartService cartService;
+    private final ICardService cardService;
 
     /**
      * return All Member's Carts
@@ -34,29 +34,29 @@ public class CartController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<List<Cart>> getMemberCarts(
+    public ResponseEntity<List<Card>> getMemberCarts(
             @PathVariable("memberNumber") Long memberNumber) {
 
-        return ResponseEntity.ok(cartService.getMemberCarts(memberNumber));
+        return ResponseEntity.ok(cardService.getMemberCards(memberNumber));
     }
 
     /**
      * get Specific Cart From Member
      *
      * @param memberNumber
-     * @param cartNumber
+     * @param cardNumber
      * @return
      */
-    @GetMapping("/{cartNumber}")
-    public ResponseEntity<Cart> getCartByCartNumber(
+    @GetMapping("/{cardNumber}")
+    public ResponseEntity<Card> getCartByCartNumber(
             @PathVariable("memberNumber") Long memberNumber,
-            @PathVariable("cartNumber")
+            @PathVariable("cardNumber")
             @Size(min = 19, message = "CartNumber Format : ####-####-####-####")
-                    String cartNumber
+                    String cardNumber
     ) {
 
         return ResponseEntity.ok(
-                cartService.getCartByNumberAndMemberNumber(cartNumber, memberNumber)
+                cardService.getCardByNumberAndMemberNumber(cardNumber, memberNumber)
         );
     }
 
@@ -64,38 +64,38 @@ public class CartController {
      * add A Cart to Member's CartList
      *
      * @param memberNumber
-     * @param cart
+     * @param card
      * @return
      */
     @PostMapping
     public ResponseEntity addCart(
             @PathVariable("memberNumber") Long memberNumber,
-            @Valid @RequestBody Cart cart,
+            @Valid @RequestBody Card card,
             BindingResult result) {
 
         if (result.hasErrors()) {
             throw new ValidationsException(result);
         }
-        Cart        savedCart = cartService.create(memberNumber, cart);
+        Card        savedCard = cardService.create(memberNumber, card);
         HttpHeaders headers   = new HttpHeaders();
         headers.add("Location",
-                    "/api/v1/members/" + memberNumber + "/carts/" + savedCart.getCartNumber());
+                    "/api/v1/members/" + memberNumber + "/cards/" + savedCard.getCardNumber());
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
     /**
-     * remove cart form Member's cartList
+     * remove card form Member's cardList
      *
      * @param memberNumber
-     * @param cartNumber
+     * @param cardNumber
      * @return
      */
-    @DeleteMapping("/{cartNumber}")
+    @DeleteMapping("/{cardNumber}")
     public ResponseEntity remove(
             @PathVariable("memberNumber") Long memberNumber,
-            @PathVariable("cartNumber") String cartNumber) {
+            @PathVariable("cardNumber") String cardNumber) {
 
-        cartService.remove(memberNumber, cartNumber);
+        cardService.remove(memberNumber, cardNumber);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
@@ -112,7 +112,7 @@ public class CartController {
             @RequestBody PaymentDetails paymentDetails
     ) {
 
-        PaymentProcessorResponse response = cartService.transfer(memberNumber, paymentDetails);
+        PaymentProcessorResponse response = cardService.transfer(memberNumber, paymentDetails);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

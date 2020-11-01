@@ -22,7 +22,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CartService {
+public class CardService implements ICardService {
 
     private final CartRepository cartRepository;
     private final MemberService memberService;
