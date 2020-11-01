@@ -2,7 +2,6 @@ package com.digipay.paymentservice.paymentservice.controller;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -14,12 +13,12 @@ import static com.digipay.paymentservice.paymentservice.controller.utils.generat
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-class CartControllerTest extends CartControllerTestFixture {
+class CardControllerTest extends CardControllerTestFixture {
 
     @Test
-    @DisplayName("getMemberCarts->Member Not Exists")
+    @DisplayName("getMemberCards->Member Not Exists")
 //    @Disabled
-    void getMemberCarts_MemberNotExists() throws Exception {
+    void getMemberCards_MemberNotExists() throws Exception {
 
         RequestBuilder request = MockMvcRequestBuilders
                 .get(BASE_URL + Long.MAX_VALUE + CART_PREFIX_URL)
@@ -34,9 +33,9 @@ class CartControllerTest extends CartControllerTestFixture {
     }
 
     @Test
-    @DisplayName("getMemberCarts->Member doesn't Have any Cart")
+    @DisplayName("getMemberCards->Member doesn't Have any Card")
 //    @Disabled
-    void getMemberCarts_dosenotHaveAnyCart() throws Exception {
+    void getMemberCards_dosenotHaveAnyCard() throws Exception {
 
         RequestBuilder request = MockMvcRequestBuilders
                 .get(BASE_URL + member2.getMemberNumber() + CART_PREFIX_URL)
@@ -47,13 +46,13 @@ class CartControllerTest extends CartControllerTestFixture {
                .andExpect(content().contentType("application/json"))
                .andExpect(jsonPath("$.status", is("fail")))
                .andExpect(jsonPath("$.shortMessage",
-                                   is("Member doesn't have any cart.")));
+                                   is("Member doesn't have any card.")));
     }
 
     @Test
-    @DisplayName("getMemberCarts->Member Have 3 Cart.")
+    @DisplayName("getMemberCards->Member Have 3 Card.")
 //    @Disabled
-    void getMemberCarts_ValidInput() throws Exception {
+    void getMemberCards_ValidInput() throws Exception {
 
         RequestBuilder request = MockMvcRequestBuilders
                 .get(BASE_URL + member1.getMemberNumber() + CART_PREFIX_URL)
@@ -63,27 +62,27 @@ class CartControllerTest extends CartControllerTestFixture {
                .andExpect(status().isOk())
                .andExpect(content().contentType("application/json"))
                .andExpect(jsonPath("$.*", hasSize(4)))
-               .andExpect(jsonPath("$.[*].cartNumber",
-                                   hasItems(cart1.getCartNumber(),
-                                            cart2.getCartNumber(),
-                                            cart3.getCartNumber(),
-                                            cart4.getCartNumber())));
+               .andExpect(jsonPath("$.[*].cardNumber",
+                                   hasItems(card1.getCardNumber(),
+                                            card2.getCardNumber(),
+                                            card3.getCardNumber(),
+                                            card4.getCardNumber())));
 
 
     }
 
 
     @Test
-    @DisplayName("getCartByCartNumber->CartNotExists")
+    @DisplayName("getCardByCardNumber->CardNotExists")
 //    @Disabled
-    void getCartByCartNumber_CartNotExists() throws Exception {
+    void getCardByCardNumber_CardNotExists() throws Exception {
 
         RequestBuilder request = MockMvcRequestBuilders
                 .get(BASE_URL +
                              member1.getMemberNumber() +
                              CART_PREFIX_URL +
                              "/" +
-                             cart5.getCartNumber())
+                             card5.getCardNumber())
                 .accept(MediaType.APPLICATION_JSON_VALUE);
 
         mockMvc.perform(request)
@@ -91,37 +90,37 @@ class CartControllerTest extends CartControllerTestFixture {
                .andExpect(content().contentType("application/json"))
                .andExpect(jsonPath("$.status", is("fail")))
                .andExpect(jsonPath("$.shortMessage",
-                                   is("Member doesn't have any Cart with Number : " + cart5.getCartNumber())));
+                                   is("Member doesn't have any Card with Number : " + card5.getCardNumber())));
     }
 
 
     @Test
-    @DisplayName("getCartByCartNumber->Member Have this card")
+    @DisplayName("getCardByCardNumber->Member Have this card")
 //    @Disabled
-    void getCartByCartNumber_ValidInput() throws Exception {
+    void getCardByCardNumber_ValidInput() throws Exception {
 
         RequestBuilder request = MockMvcRequestBuilders
                 .get(BASE_URL +
                              member1.getMemberNumber() +
                              CART_PREFIX_URL +
                              "/" +
-                             cart3.getCartNumber())
+                             card3.getCardNumber())
                 .accept(MediaType.APPLICATION_JSON_VALUE);
 
         mockMvc.perform(request)
                .andExpect(status().isOk())
                .andExpect(content().contentType("application/json"))
-               .andExpect(jsonPath("$.ccv2", is(cart3.getCcv2())))
-               .andExpect(jsonPath("$.expDate", is(cart3.getExpDate())))
-               .andExpect(jsonPath("$.cartNumber", is(cart3.getCartNumber())))
-               .andExpect(jsonPath("$.pin", is(cart3.getPin().intValue())));
+               .andExpect(jsonPath("$.ccv2", is(card3.getCcv2())))
+               .andExpect(jsonPath("$.expDate", is(card3.getExpDate())))
+               .andExpect(jsonPath("$.cardNumber", is(card3.getCardNumber())))
+               .andExpect(jsonPath("$.pin", is(card3.getPin().intValue())));
     }
 
 
     @Test
-    @DisplayName("AddCart->Card Already Exists")
+    @DisplayName("AddCard->Card Already Exists")
 //    @Disabled
-    void addCart_CartAlreadyExists() throws Exception {
+    void addCard_CardAlreadyExists() throws Exception {
 
         RequestBuilder request = MockMvcRequestBuilders
                 .post(BASE_URL +
@@ -129,11 +128,11 @@ class CartControllerTest extends CartControllerTestFixture {
                               CART_PREFIX_URL)
                 .contentType("application/json")
                 .content("{\n" +
-                                 "    \"cartNumber\": \"" + cart1.getCartNumber() + "\",\n" +
-                                 "    \"ccv2\": " + cart1.getCcv2() + ",\n" +
-                                 "    \"expDate\": " + cart1.getExpDate() + ",\n" +
-                                 "    \"pin\": " + cart1.getPin() + ",\n" +
-                                 "    \"active\": \"" + cart1.getActive() + "\"\n" +
+                                 "    \"cardNumber\": \"" + card1.getCardNumber() + "\",\n" +
+                                 "    \"ccv2\": " + card1.getCcv2() + ",\n" +
+                                 "    \"expDate\": " + card1.getExpDate() + ",\n" +
+                                 "    \"pin\": " + card1.getPin() + ",\n" +
+                                 "    \"active\": \"" + card1.getActive() + "\"\n" +
                                  "}")
                 .accept(MediaType.APPLICATION_JSON_VALUE);
 
@@ -142,14 +141,14 @@ class CartControllerTest extends CartControllerTestFixture {
                .andExpect(content().contentType("application/json"))
                .andExpect(jsonPath("$.status", is("fail")))
                .andExpect(jsonPath("$.shortMessage",
-                                   is("Cart with Number : " + cart1.getCartNumber() + " Already Exists.")));
+                                   is("Card with Number : " + card1.getCardNumber() + " Already Exists.")));
     }
 
 
     @Test
-    @DisplayName("AddCart-> Valid Input")
+    @DisplayName("AddCard-> Valid Input")
 //    @Disabled
-    void addCart_ValidInput() throws Exception {
+    void addCard_ValidInput() throws Exception {
 
         RequestBuilder request = MockMvcRequestBuilders
                 .post(BASE_URL +
@@ -157,29 +156,29 @@ class CartControllerTest extends CartControllerTestFixture {
                               CART_PREFIX_URL)
                 .contentType("application/json")
                 .content("{\n" +
-                                 "    \"cartNumber\": \"" + cart4.getCartNumber() + "\",\n" +
-                                 "    \"ccv2\": " + cart4.getCcv2() + ",\n" +
-                                 "    \"expDate\": " + cart4.getExpDate() + ",\n" +
-                                 "    \"pin\": " + cart4.getPin() + ",\n" +
-                                 "    \"active\": \"" + cart4.getActive() + "\"\n" +
+                                 "    \"cardNumber\": \"" + card4.getCardNumber() + "\",\n" +
+                                 "    \"ccv2\": " + card4.getCcv2() + ",\n" +
+                                 "    \"expDate\": " + card4.getExpDate() + ",\n" +
+                                 "    \"pin\": " + card4.getPin() + ",\n" +
+                                 "    \"active\": \"" + card4.getActive() + "\"\n" +
                                  "}")
                 .accept(MediaType.APPLICATION_JSON_VALUE);
 
         mockMvc.perform(request)
                .andExpect(status().isCreated())
                .andExpect(header().string("Location",
-                                          "/api/v1/members/" + member1.getMemberNumber() + "/carts/" + cart4.getCartNumber()));
+                                          "/api/v1/members/" + member1.getMemberNumber() + "/cards/" + card4.getCardNumber()));
     }
 
     @Test
-    @Disabled
+//    @Disabled
     void transfer() throws Exception {
 
         Long   paymentId = generateNumber();
         String status    = "SUCCESS";
         String message   = "Transaction is Done.";
         WireMock.stubFor(
-                WireMock.post((cart1.getCartNumber().startsWith("6037") ? "/payments/transfer" : "/cards/pay"))
+                WireMock.post((card1.getCardNumber().startsWith("6037") ? "/payments/transfer" : "/cards/pay"))
                         .willReturn(WireMock.okForContentType("application/json",
                                                               "{\n" +
                                                                       "    \"paymentId\": \"" + paymentId + "\"," +
@@ -195,32 +194,32 @@ class CartControllerTest extends CartControllerTestFixture {
                               "/transfer")
                 .contentType("application/json")
                 .content("{\n" +
-                                 "    \"source\": \"" + cart1.getCartNumber() + "\",\n" +
-                                 "    \"dest\": \"" + cart4.getCartNumber() + "\",\n" +
-                                 "    \"ccv2\": " + cart1.getCcv2() + ",\n" +
-                                 "    \"expDate\": \"" + cart1.getExpDate() + "\",\n" +
-                                 "    \"pin\": " + cart1.getPin() + ",\n" +
+                                 "    \"source\": \"" + card1.getCardNumber() + "\",\n" +
+                                 "    \"dest\": \"" + card4.getCardNumber() + "\",\n" +
+                                 "    \"ccv2\": " + card1.getCcv2() + ",\n" +
+                                 "    \"expDate\": \"" + card1.getExpDate() + "\",\n" +
+                                 "    \"pin\": " + card1.getPin() + ",\n" +
                                  "    \"amount\": \"" + generateNumber() + "\"\n" +
                                  "}")
                 .accept(MediaType.APPLICATION_JSON_VALUE);
         mockMvc.perform(request)
                .andExpect(status().isOk())
                .andExpect(content().contentType("application/json"))
-               .andExpect(jsonPath("$.paymentId", is(String.valueOf(paymentId.intValue()))))
+               .andExpect(jsonPath("$.paymentId", is(paymentId.intValue())))
                .andExpect(jsonPath("$.paymentResponseStatus", is(status)))
                .andExpect(jsonPath("$.description", is(message)));
     }
 
 
     @Test
-    @Disabled
+//    @Disabled
     void transfer_RandomStatus() throws Exception {
 
         Long   paymentId = generateNumber();
         String status    = generateStatus();
         String message   = status.equals("SUCCESS") ? "Transaction is Done." : "Transaction is FAILED.";
         WireMock.stubFor(
-                WireMock.post((cart1.getCartNumber().startsWith("6037") ? "/payments/transfer" : "/cards/pay"))
+                WireMock.post((card1.getCardNumber().startsWith("6037") ? "/payments/transfer" : "/cards/pay"))
                         .willReturn(WireMock.okForContentType("application/json",
                                                               "{\n" +
                                                                       "    \"paymentId\": \"" + paymentId + "\"," +
@@ -236,18 +235,18 @@ class CartControllerTest extends CartControllerTestFixture {
                               "/transfer")
                 .contentType("application/json")
                 .content("{\n" +
-                                 "    \"source\": \"" + cart1.getCartNumber() + "\",\n" +
-                                 "    \"dest\": \"" + cart4.getCartNumber() + "\",\n" +
-                                 "    \"ccv2\": " + cart1.getCcv2() + ",\n" +
-                                 "    \"expDate\": \"" + cart1.getExpDate() + "\",\n" +
-                                 "    \"pin\": " + cart1.getPin() + ",\n" +
+                                 "    \"source\": \"" + card1.getCardNumber() + "\",\n" +
+                                 "    \"dest\": \"" + card4.getCardNumber() + "\",\n" +
+                                 "    \"ccv2\": " + card1.getCcv2() + ",\n" +
+                                 "    \"expDate\": \"" + card1.getExpDate() + "\",\n" +
+                                 "    \"pin\": " + card1.getPin() + ",\n" +
                                  "    \"amount\": \"" + generateNumber() + "\"\n" +
                                  "}")
                 .accept(MediaType.APPLICATION_JSON_VALUE);
         mockMvc.perform(request)
                .andExpect(status().isOk())
                .andExpect(content().contentType("application/json"))
-               .andExpect(jsonPath("$.paymentId", is(String.valueOf(paymentId.intValue()))))
+               .andExpect(jsonPath("$.paymentId", is(paymentId.intValue())))
                .andExpect(jsonPath("$.paymentResponseStatus", is(status)))
                .andExpect(jsonPath("$.description", is(message)));
     }
@@ -260,15 +259,15 @@ class CartControllerTest extends CartControllerTestFixture {
 
 
     @Test
-//    @DisplayName("AddCart-> Valid Input")
+//    @DisplayName("AddCard-> Valid Input")
 //    @Disabled
-    void removeCart() throws Exception {
+    void removeCard() throws Exception {
 
         RequestBuilder request = MockMvcRequestBuilders
                 .delete(BASE_URL +
                                 member1.getMemberNumber() +
                                 CART_PREFIX_URL
-                                + "/" + cart3.getCartNumber()
+                                + "/" + card3.getCardNumber()
                 )
                 .contentType("application/json")
                 .accept(MediaType.APPLICATION_JSON_VALUE);
@@ -280,7 +279,7 @@ class CartControllerTest extends CartControllerTestFixture {
                              member1.getMemberNumber() +
                              CART_PREFIX_URL +
                              "/" +
-                             cart3.getCartNumber())
+                             card3.getCardNumber())
                 .accept(MediaType.APPLICATION_JSON_VALUE);
 
         mockMvc.perform(request1)
@@ -288,9 +287,9 @@ class CartControllerTest extends CartControllerTestFixture {
                .andExpect(content().contentType("application/json"))
                .andExpect(jsonPath("$.status", is("fail")))
                .andExpect(jsonPath("$.shortMessage",
-                                   is("Member doesn't have any Cart with Number : " + cart3.getCartNumber())));
-        // dirty context not working. added the removed cart for other Test case.
-        cartRepository.save(cart3);
+                                   is("Member doesn't have any Card with Number : " + card3.getCardNumber())));
+        // dirty context not working. added the removed card for other Test case.
+        cardRepository.save(card3);
     }
 }
 

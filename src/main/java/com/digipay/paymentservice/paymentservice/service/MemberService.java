@@ -1,4 +1,4 @@
-package com.digipay.paymentservice.paymentservice.Service;
+package com.digipay.paymentservice.paymentservice.service;
 
 import com.digipay.paymentservice.paymentservice.exception.ResourceNotFoundException;
 import com.digipay.paymentservice.paymentservice.model.Member;
@@ -6,12 +6,11 @@ import com.digipay.paymentservice.paymentservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MemberService {
+public class MemberService implements IMemberService{
     public final MemberRepository memberRepository;
 
     public Boolean existsMember(Long memberNumber) {

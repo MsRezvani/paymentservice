@@ -28,30 +28,30 @@ public class CardController {
     private final ICardService cardService;
 
     /**
-     * return All Member's Carts
+     * return All Member's Cards
      *
      * @param memberNumber
      * @return
      */
     @GetMapping
-    public ResponseEntity<List<Card>> getMemberCarts(
+    public ResponseEntity<List<Card>> getMemberCards(
             @PathVariable("memberNumber") Long memberNumber) {
 
         return ResponseEntity.ok(cardService.getMemberCards(memberNumber));
     }
 
     /**
-     * get Specific Cart From Member
+     * get Specific Card From Member
      *
      * @param memberNumber
      * @param cardNumber
      * @return
      */
     @GetMapping("/{cardNumber}")
-    public ResponseEntity<Card> getCartByCartNumber(
+    public ResponseEntity<Card> getCardByCardNumber(
             @PathVariable("memberNumber") Long memberNumber,
             @PathVariable("cardNumber")
-            @Size(min = 19, message = "CartNumber Format : ####-####-####-####")
+            @Size(min = 19, message = "CardNumber Format : ####-####-####-####")
                     String cardNumber
     ) {
 
@@ -61,14 +61,14 @@ public class CardController {
     }
 
     /**
-     * add A Cart to Member's CartList
+     * add A Card to Member's CardList
      *
      * @param memberNumber
      * @param card
      * @return
      */
     @PostMapping
-    public ResponseEntity addCart(
+    public ResponseEntity addCard(
             @PathVariable("memberNumber") Long memberNumber,
             @Valid @RequestBody Card card,
             BindingResult result) {
@@ -100,7 +100,7 @@ public class CardController {
     }
 
     /**
-     * Transfer money from Cart to another
+     * Transfer money from Card to another
      *
      * @param memberNumber
      * @param paymentDetails

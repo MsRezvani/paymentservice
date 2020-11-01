@@ -1,7 +1,8 @@
 package com.digipay.paymentservice.paymentservice.controller;
 
 
-import com.digipay.paymentservice.paymentservice.Service.ReportTransactionService;
+import com.digipay.paymentservice.paymentservice.service.IReportTransactionService;
+import com.digipay.paymentservice.paymentservice.service.ReportTransactionService;
 import com.digipay.paymentservice.paymentservice.model.PaymentProcessorResponse;
 import com.digipay.paymentservice.paymentservice.model.Transaction;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ import java.util.Map;
 public class ReportTransactionController {
 
 
-    private final ReportTransactionService reportsService;
+    private final IReportTransactionService reportsService;
 
     @GetMapping
     public ResponseEntity<Map<PaymentProcessorResponse.PaymentResponseStatus, List<Transaction>>> getMemberCarts(

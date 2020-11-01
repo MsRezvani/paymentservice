@@ -1,8 +1,8 @@
 package com.digipay.paymentservice.paymentservice.controller;
 
-import com.digipay.paymentservice.paymentservice.Service.MemberService;
 import com.digipay.paymentservice.paymentservice.exception.ValidationsException;
 import com.digipay.paymentservice.paymentservice.model.Member;
+import com.digipay.paymentservice.paymentservice.service.IMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,10 +16,12 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/v1/members")
 public class MemberController {
-    private final MemberService memberService;
+
+    private final IMemberService memberService;
 
     @GetMapping("/{memberNumber}")
     public Member find(@PathVariable("memberNumber") Long memberNumber) {
+
         return memberService
                 .findByMemberNumber(memberNumber);
     }
@@ -28,11 +30,12 @@ public class MemberController {
     public ResponseEntity<?> create(@Valid @RequestBody Member member,
                                     BindingResult result
     ) {
+
         if (result.hasErrors()) {
             throw new ValidationsException(result);
         }
-        Member savedMember = memberService.create(member);
-        HttpHeaders headers = new HttpHeaders();
+        Member      savedMember = memberService.create(member);
+        HttpHeaders headers     = new HttpHeaders();
         headers.add("Location", "/api/v1/persons" + savedMember.getId().toString());
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }

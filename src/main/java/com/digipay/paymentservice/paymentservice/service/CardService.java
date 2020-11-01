@@ -1,14 +1,13 @@
-package com.digipay.paymentservice.paymentservice.Service;
+package com.digipay.paymentservice.paymentservice.service;
 
 import com.digipay.paymentservice.paymentservice.exception.ObjectAlreadyExistsException;
 import com.digipay.paymentservice.paymentservice.exception.ResourceNotFoundException;
 import com.digipay.paymentservice.paymentservice.gateway.PaymentGateway;
-import com.digipay.paymentservice.paymentservice.model.Cart;
+import com.digipay.paymentservice.paymentservice.model.Card;
 import com.digipay.paymentservice.paymentservice.model.Member;
 import com.digipay.paymentservice.paymentservice.model.PaymentDetails;
 import com.digipay.paymentservice.paymentservice.model.PaymentProcessorResponse;
-import com.digipay.paymentservice.paymentservice.notification.NotificationService;
-import com.digipay.paymentservice.paymentservice.repository.CartRepository;
+import com.digipay.paymentservice.paymentservice.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,78 +23,78 @@ import java.util.List;
 @Slf4j
 public class CardService implements ICardService {
 
-    private final CartRepository cartRepository;
-    private final MemberService memberService;
-    private final TransactionService transactionService;
+    private final CardRepository cardRepository;
+    private final IMemberService memberService;
+    private final ITransactionService transactionService;
     private final RestTemplate restTemplate;
     private final PaymentGateway gateway;
-    private final NotificationService notificationService;
+    private final INotificationService notificationService;
 
     /**
-     * Return All Member's Cart
+     * Return All Member's Card
      *
      * @param memberNumber
      * @return
      */
-    public List<Cart> getMemberCarts(Long memberNumber) {
+    public List<Card> getMemberCards(Long memberNumber) {
 
         checkMemberExists(memberNumber);
-        return cartRepository.findByMember_MemberNumber(memberNumber)
-                             .orElseThrow(() -> new ResourceNotFoundException("Member doesn't have any cart."));
+        return cardRepository.findByMember_MemberNumber(memberNumber)
+                             .orElseThrow(() -> new ResourceNotFoundException("Member doesn't have any card."));
     }
 
 
-    public Cart getCartByNumberAndMemberNumber(String cartNumber,
+    public Card getCardByNumberAndMemberNumber(String cardNumber,
                                                Long memberNumber) {
 
         checkMemberExists(memberNumber);
-        return cartRepository
-                .findByCartNumberAndMember_MemberNumber(cartNumber, memberNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("Member doesn't have any Cart with Number : " + cartNumber));
+        return cardRepository
+                .findByCardNumberAndMember_MemberNumber(cardNumber, memberNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("Member doesn't have any Card with Number : " + cardNumber));
     }
 
     /**
-     * save Cart & Add to the Member's CartList
+     * save Card & Add to the Member's CardList
      *
      * @param memberNumber
-     * @param cart
+     * @param card
      * @return
      */
     @Transactional
-    public Cart create(Long memberNumber, Cart cart) {
+    public Card create(Long memberNumber, Card card) {
 
-        if (cartRepository.existsByCartNumber(cart.getCartNumber())) {
+        if (cardRepository.existsByCardNumber(card.getCardNumber())) {
             throw new ObjectAlreadyExistsException(
-                    "Cart with Number : " + cart.getCartNumber() + " Already Exists.");
+                    "Card with Number : " + card.getCardNumber() + " Already Exists.");
         }
         final Member member = memberService.findByMemberNumber(memberNumber);
-        cart.setMember(member);
-        member.getCartList()
-              .add(cart);
-        final Cart savedCard = cartRepository.save(cart);
+        card.setMember(member);
+        member.getCardList()
+              .add(card);
+        final Card savedCard = cardRepository.save(card);
         return savedCard;
     }
 
     /**
-     * Delete Cart From Account 'CartList' & itself
+     * Delete Card From Account 'CardList' & itself
      *
      * @param memberNumber
-     * @param cartNumber
+     * @param cardNumber
      */
     @Transactional
-    public void remove(Long memberNumber, String cartNumber) {
+    public void remove(Long memberNumber, String cardNumber) {
 
         final Member member = memberService.findByMemberNumber(memberNumber);
-        final Cart   cart   = getCartByNumberAndMemberNumber(cartNumber, memberNumber);
-        member.getCartList()
-              .remove(cart);
-        cartRepository.delete(cart);
+        final Card   card   = getCardByNumberAndMemberNumber(cardNumber, memberNumber);
+        member.getCardList()
+              .remove(card);
+        cardRepository.delete(card);
     }
 
     /**
-     * Transfer Money from Cart to another Cart
+     * Transfer Money from Card to another Card
      *
-     * @param memberNumber   of Owner's Cart
+     * @param memberNumber   of Owner's Card
      * @param paymentDetails have all information that need to transfer
      * @return
      */
@@ -104,14 +103,19 @@ public class CardService implements ICardService {
                                              final PaymentDetails paymentDetails) {
 
         checkMemberExists(memberNumber);
-        Cart sourceCart = getCartByNumberAndMemberNumber(paymentDetails.getSource(), memberNumber);
-
+        Card sourceCard = getCardByNumberAndMemberNumber(paymentDetails.getSource(), memberNumber);
+        checkValidateCard();
         final PaymentProcessorResponse response = gateway.transfer(paymentDetails);
         if (response.getPaymentResponseStatus() == PaymentProcessorResponse.PaymentResponseStatus.SUCCESS) {
             sendNotification(paymentDetails.getSource(), paymentDetails.getAmount(), new Date());
         }
-        transactionService.save(sourceCart, paymentDetails, response);
+        transactionService.save(sourceCard, paymentDetails, response);
         return response;
+    }
+
+    private void checkValidateCard() {
+
+
     }
 
     private void sendNotification(String dest, BigDecimal amount, Date date) {

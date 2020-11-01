@@ -1,9 +1,9 @@
 package com.digipay.paymentservice.paymentservice.controller;
 
 import com.digipay.paymentservice.paymentservice.PaymentServiceApplication;
-import com.digipay.paymentservice.paymentservice.Service.CartService;
-import com.digipay.paymentservice.paymentservice.Service.MemberService;
-import com.digipay.paymentservice.paymentservice.model.Cart;
+import com.digipay.paymentservice.paymentservice.service.ICardService;
+import com.digipay.paymentservice.paymentservice.service.MemberService;
+import com.digipay.paymentservice.paymentservice.model.Card;
 import com.digipay.paymentservice.paymentservice.model.Member;
 import com.digipay.paymentservice.paymentservice.model.PaymentProcessorResponse;
 import com.digipay.paymentservice.paymentservice.model.Transaction;
@@ -37,10 +37,10 @@ class ReportTransactionControllerTest {
     private static final String CART = "/carts/";
     private static final String REPORT = "/reports";
     Member member1;
-    Cart cart1;
+    Card card1;
     Transaction t1;
     Transaction t2;
-    @Autowired CartService cartService;
+    @Autowired ICardService cartService;
     @Autowired MemberService memberService;
     @Autowired TransactionRepository transactionRepository;
     private MockMvc mockMvc;
@@ -60,36 +60,36 @@ class ReportTransactionControllerTest {
                         .active(true)
                         .nationalityCode(generateNationalityCode())
                         .build();
-        cart1   = Cart.builder()
-                      .cartNumber(generateCartNumbers())
-                      .active(true)
-                      .ccv2(generateCvv2())
-                      .expDate(2010)
-                      .pin(generateNumber())
-                      .member(member1)
-                      .build();
-        t1      = Transaction.builder()
-                             .cart(cart1)
+        card1 = Card.builder()
+                    .cardNumber(generateCardNumbers())
+                    .active(true)
+                    .ccv2(generateCvv2())
+                    .expDate(2010)
+                    .pin(generateNumber())
+                    .member(member1)
+                    .build();
+        t1    = Transaction.builder()
+                             .card(card1)
                              .result(PaymentProcessorResponse.PaymentResponseStatus.SUCCESS)
                              .amountTransaction(new BigDecimal(2500))
                              .description("Transaction is Completed.")
-                             .paymentId(generateNumber().toString())
+                             .paymentId(generateNumber())
                              .transactionCode(UUID.randomUUID())
                              .transactionDate(990203)
-                             .destinationCartNumber(generateCartNumbers())
+                             .destinationCardNumber(generateCardNumbers())
                              .build();
-        t2      = Transaction.builder()
-                             .cart(cart1)
+        t2    = Transaction.builder()
+                             .card(card1)
                              .result(PaymentProcessorResponse.PaymentResponseStatus.FAILED)
                              .amountTransaction(new BigDecimal(generateNumber()))
                              .description("Transaction is Failed.")
-                             .paymentId(generateNumber().toString())
+                             .paymentId(generateNumber())
                              .transactionCode(UUID.randomUUID())
                              .transactionDate(990203)
-                             .destinationCartNumber(generateCartNumbers())
+                             .destinationCardNumber(generateCardNumbers())
                              .build();
         memberService.create(member1);
-        cartService.create(member1.getMemberNumber(), cart1);
+        cartService.create(member1.getMemberNumber(), card1);
         transactionRepository.save(t1);
         transactionRepository.save(t2);
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
@@ -103,7 +103,7 @@ class ReportTransactionControllerTest {
                 .get(BASE +
                              member1.getMemberNumber() +
                              CART +
-                             cart1.getCartNumber() +
+                             card1.getCardNumber() +
                              REPORT)
                 .param("from", String.valueOf(t1.getTransactionDate() - 1))
                 .param("to", String.valueOf(t1.getTransactionDate() + 1))
@@ -126,7 +126,7 @@ class ReportTransactionControllerTest {
                 .get(BASE +
                              member1.getMemberNumber() +
                              CART +
-                             cart1.getCartNumber() +
+                             card1.getCardNumber() +
                              REPORT)
                 .param("from", String.valueOf(t1.getTransactionDate() + 1000))
                 .param("to", String.valueOf(t1.getTransactionDate() + 100000))
@@ -139,6 +139,6 @@ class ReportTransactionControllerTest {
                .andExpect(jsonPath("$.shortMessage",
                                    is("Member with Number : "
                                               + member1.getMemberNumber() +
-                                              " Haven't any Transaction on Cart with Number : " + cart1.getCartNumber())));
+                                              " Haven't any Transaction on Card with Number : " + card1.getCardNumber())));
     }
 }

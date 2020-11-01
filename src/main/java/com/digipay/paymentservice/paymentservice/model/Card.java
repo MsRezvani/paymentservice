@@ -20,17 +20,17 @@ import javax.validation.constraints.Size;
 @Builder
 @ToString(exclude = "member")
 @Entity
-@Table(name = "tbl_cart")
-public class Cart {
+@Table(name = "tbl_card")
+public class Card {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "cart_number", unique = true)
+    @Column(name = "card_number", unique = true)
     @NotBlank
     @Size(min = 19, max = 19
-            , message = "cart Number Format ####-####-####-####")
-    private String cartNumber;
+            , message = "card Number Format ####-####-####-####")
+    private String cardNumber;
     @Min(value = 100)
     private Integer ccv2;
     @Positive

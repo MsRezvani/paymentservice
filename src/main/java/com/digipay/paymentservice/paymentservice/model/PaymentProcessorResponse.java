@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class PaymentProcessorResponse {
 
     @JsonProperty("paymentId")
-    String paymentId;
+    Long paymentId;
     @JsonProperty("paymentResponseStatus")
     PaymentResponseStatus paymentResponseStatus;
     @JsonProperty("description")
@@ -19,7 +19,7 @@ public class PaymentProcessorResponse {
 
     @JsonCreator
     public PaymentProcessorResponse(
-            @JsonProperty("paymentId") String paymentId,
+            @JsonProperty("paymentId") Long paymentId,
             @JsonProperty("paymentResponseStatus") String paymentResponseStatus,
             @JsonProperty("description") String description) {
 

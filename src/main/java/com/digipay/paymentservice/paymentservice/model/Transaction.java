@@ -20,14 +20,14 @@ import java.util.UUID;
 public class Transaction {
 
     @Column(name = "payment_id", unique = true, nullable = false)
-    private String paymentId;
+    private Long paymentId;
     @Id
     @GeneratedValue
     private long id;
     @Column(name = "transaction_code", unique = true, nullable = false)
     private UUID transactionCode;
-    @Column(name = "destination_cart_number", nullable = false)
-    private String destinationCartNumber;
+    @Column(name = "destination_card_number", nullable = false)
+    private String destinationCardNumber;
     @Column(name = "transaction_date", nullable = false)
     private Integer transactionDate;
     @Column(name = "amount_transaction", nullable = false)
@@ -39,24 +39,24 @@ public class Transaction {
     private PaymentProcessorResponse.PaymentResponseStatus result;
     @JsonIgnore
     @ManyToOne
-    private Cart cart;
+    private Card card;
 
-    public Transaction(Cart sourceCart,
+    public Transaction(Card sourceCard,
                        PaymentDetails details,
                        PaymentProcessorResponse response
     ) {
 
         LocalDate localDate = LocalDate.now();
-        this.transactionCode       = UUID.randomUUID();
-        this.transactionDate       = Integer.valueOf(String.valueOf(localDate.getYear()) +
+        this.transactionCode   = UUID.randomUUID();
+        this.transactionDate   = Integer.valueOf(String.valueOf(localDate.getYear()) +
                                                              String.valueOf(localDate.getMonthValue()) +
                                                              String.valueOf(localDate.getDayOfMonth()));
-        this.amountTransaction     = details.getAmount();
+        this.amountTransaction = details.getAmount();
         this.description           = response.getDescription();
-        this.destinationCartNumber = details.getDest();
+        this.destinationCardNumber = details.getDest();
         this.paymentId             = response.getPaymentId();
-        this.result                = response.getPaymentResponseStatus();
-        this.cart                  = sourceCart;
+        this.result            = response.getPaymentResponseStatus();
+        this.card              = sourceCard;
 
     }
 

@@ -1,4 +1,12 @@
 package com.digipay.paymentservice.paymentservice.service;
 
-public class IMemberService {
+import com.digipay.paymentservice.paymentservice.model.Member;
+
+public interface IMemberService {
+
+    Boolean existsMember(Long memberNumber);
+
+    Member findByMemberNumber(Long memberNumber);
+
+    Member create(Member member);
 }

@@ -24,6 +24,7 @@ import java.util.List;
 @Entity
 @Table(name = "tbl_member")
 public class Member {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -55,6 +56,8 @@ public class Member {
     )
     private Long memberNumber;
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<Cart> cartList;
+    @OneToMany(fetch = FetchType.EAGER,
+            orphanRemoval = true,
+            mappedBy = "member")
+    private List<Card> cardList;
 }

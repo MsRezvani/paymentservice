@@ -22,7 +22,7 @@ public class generator {
         return getRandomIntegerBetween(1000000000L, 9999999999L);
     }
 
-    public static String generateCartNumbers() {
+    public static String generateCardNumbers() {
 
         String value;
         Random rd = new Random();

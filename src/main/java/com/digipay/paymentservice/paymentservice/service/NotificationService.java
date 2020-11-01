@@ -1,5 +1,7 @@
-package com.digipay.paymentservice.paymentservice.notification;
+package com.digipay.paymentservice.paymentservice.service;
 
+import com.digipay.paymentservice.paymentservice.notification.ConfigureRabbitMq;
+import com.digipay.paymentservice.paymentservice.notification.Message;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +14,7 @@ import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
-public class NotificationService {
+public class NotificationService implements INotificationService {
 
     private final RabbitTemplate rabbitTemplate;
     private final RestTemplate restTemplate;
@@ -27,12 +29,14 @@ public class NotificationService {
             }
     )
     public void notify(String dest, BigDecimal amount, Date date) {
+
         restTemplate.postForObject("http://notificationservice:8090/messages",
-                new Message(dest, amount, date),
-                Void.class);
+                                   new Message(dest, amount, date),
+                                   Void.class);
     }
 
     public void notifyFallback(String dest, BigDecimal amount, Date date) {
+
         System.out.println("Message Send to Queue.");
         rabbitTemplate.convertAndSend(
                 ConfigureRabbitMq.EXCHANGE_NAME,

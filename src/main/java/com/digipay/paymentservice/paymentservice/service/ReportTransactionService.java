@@ -1,7 +1,7 @@
-package com.digipay.paymentservice.paymentservice.Service;
+package com.digipay.paymentservice.paymentservice.service;
 
 import com.digipay.paymentservice.paymentservice.exception.ResourceNotFoundException;
-import com.digipay.paymentservice.paymentservice.model.Cart;
+import com.digipay.paymentservice.paymentservice.model.Card;
 import com.digipay.paymentservice.paymentservice.model.PaymentProcessorResponse;
 import com.digipay.paymentservice.paymentservice.model.Transaction;
 import com.digipay.paymentservice.paymentservice.repository.ReportTransactionRepository;
@@ -14,24 +14,24 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ReportTransactionService {
+public class ReportTransactionService implements IReportTransactionService {
 
     private final ReportTransactionRepository reportTransactionRepository;
-    private final ICardService cartService;
+    private final ICardService cardService;
     private final MemberService memberService;
 
     public Map<PaymentProcessorResponse.PaymentResponseStatus, List<Transaction>> getReport(
             Long memberNumber,
-            String cartNumber,
+            String cardNumber,
             Integer from, Integer to) {
 
         memberService.findByMemberNumber(memberNumber);
-        Cart memberCarts = cartService.getCartByNumberAndMemberNumber(cartNumber, memberNumber);
+        Card memberCards = cardService.getCardByNumberAndMemberNumber(cardNumber, memberNumber);
         List<Transaction> transactionList =
-                reportTransactionRepository.findByCartAndTransactionDateBetween(memberCarts, from, to)
+                reportTransactionRepository.findByCardAndTransactionDateBetween(memberCards, from, to)
                                            .orElseThrow(() -> new ResourceNotFoundException("Member with Number : "
                                                                                                     + memberNumber +
-                                                                                                    " Haven't any Transaction on Cart with Number : " + cartNumber));
+                                                                                                    " Haven't any Transaction on Card with Number : " + cardNumber));
         return transactionList.stream()
                               .collect(Collectors.groupingBy(Transaction::getResult));
     }

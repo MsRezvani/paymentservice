@@ -1,6 +1,6 @@
-package com.digipay.paymentservice.paymentservice.Service;
+package com.digipay.paymentservice.paymentservice.service;
 
-import com.digipay.paymentservice.paymentservice.model.Cart;
+import com.digipay.paymentservice.paymentservice.model.Card;
 import com.digipay.paymentservice.paymentservice.model.PaymentDetails;
 import com.digipay.paymentservice.paymentservice.model.PaymentProcessorResponse;
 
@@ -8,12 +8,12 @@ import java.util.List;
 
 public interface ICardService {
 
-    List<Cart> getMemberCarts(Long memberNumber);
+    List<Card> getMemberCards(Long memberNumber);
 
-    Cart getCartByNumberAndMemberNumber(String cartNumber,
+    Card getCardByNumberAndMemberNumber(String cartNumber,
                                         Long memberNumber);
 
-    Cart create(Long memberNumber, Cart cart);
+    Card create(Long memberNumber, Card card);
 
     void remove(Long memberNumber, String cartNumber);
 
