@@ -1,7 +1,6 @@
 package com.digipay.paymentservice.paymentservice.service;
 
 import com.digipay.paymentservice.paymentservice.exception.ObjectAlreadyExistsException;
-import com.digipay.paymentservice.paymentservice.exception.ResourceNotFoundException;
 import com.digipay.paymentservice.paymentservice.gateway.PaymentGateway;
 import com.digipay.paymentservice.paymentservice.model.Card;
 import com.digipay.paymentservice.paymentservice.model.Member;
@@ -17,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +40,7 @@ public class CardService implements ICardService {
 
         checkMemberExists(memberNumber);
         return cardRepository.findByMember_MemberNumber(memberNumber)
-                             .orElseThrow(() -> new ResourceNotFoundException("Member doesn't have any card."));
+                             .orElseThrow(() -> new NoSuchElementException("Member doesn't have any card."));
     }
 
 
@@ -50,7 +50,7 @@ public class CardService implements ICardService {
         checkMemberExists(memberNumber);
         return cardRepository
                 .findByCardNumberAndMember_MemberNumber(cardNumber, memberNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("Member doesn't have any Card with Number : " + cardNumber));
+                .orElseThrow(() -> new NoSuchElementException("Member doesn't have any Card with Number : " + cardNumber));
     }
 
     /**
@@ -104,18 +104,12 @@ public class CardService implements ICardService {
 
         checkMemberExists(memberNumber);
         Card sourceCard = getCardByNumberAndMemberNumber(paymentDetails.getSource(), memberNumber);
-        checkValidateCard();
         final PaymentProcessorResponse response = gateway.transfer(paymentDetails);
         if (response.getPaymentResponseStatus() == PaymentProcessorResponse.PaymentResponseStatus.SUCCESS) {
             sendNotification(paymentDetails.getSource(), paymentDetails.getAmount(), new Date());
         }
         transactionService.save(sourceCard, paymentDetails, response);
         return response;
-    }
-
-    private void checkValidateCard() {
-
-
     }
 
     private void sendNotification(String dest, BigDecimal amount, Date date) {
@@ -131,6 +125,6 @@ public class CardService implements ICardService {
     private void checkMemberExists(Long memberNumber) {
 
         if (!memberService.existsMember(memberNumber))
-            throw new ResourceNotFoundException("Member with Number : " + memberNumber + " does not exist.");
+            throw new NoSuchElementException("Member with Number : " + memberNumber + " does not exist.");
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Map;
+
 import static com.digipay.paymentservice.paymentservice.controller.utils.generator.generateNumber;
 import static com.digipay.paymentservice.paymentservice.controller.utils.generator.generateStatus;
 import static org.hamcrest.Matchers.*;
@@ -30,6 +32,7 @@ class CardControllerTest extends CardControllerTestFixture {
                .andExpect(jsonPath("$.status", is("fail")))
                .andExpect(jsonPath("$.shortMessage",
                                    is("Member with Number : " + Long.MAX_VALUE + " does not exist.")));
+
     }
 
     @Test

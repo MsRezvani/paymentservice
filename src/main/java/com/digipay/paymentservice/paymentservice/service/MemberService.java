@@ -1,11 +1,12 @@
 package com.digipay.paymentservice.paymentservice.service;
 
-import com.digipay.paymentservice.paymentservice.exception.ResourceNotFoundException;
 import com.digipay.paymentservice.paymentservice.model.Member;
 import com.digipay.paymentservice.paymentservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +20,7 @@ public class MemberService implements IMemberService{
 
     public Member findByMemberNumber(Long memberNumber) {
         return memberRepository.findByMemberNumber(memberNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("Member with Number : " + memberNumber + " does not exist."));
+                .orElseThrow(() -> new NoSuchElementException("Member with Number : " + memberNumber + " does not exist."));
     }
 
     public Member create(Member member) {

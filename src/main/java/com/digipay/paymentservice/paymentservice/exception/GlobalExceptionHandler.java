@@ -11,13 +11,14 @@ import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends RuntimeException {
 
     @ExceptionHandler(ValidationsException.class)
-    public ResponseEntity<ValidationErrorResponse> handleNoHandlerFound2(ValidationsException exception) {
+    public ResponseEntity<ValidationErrorResponse> validationExceptionHandler(ValidationsException exception) {
         return new ResponseEntity<>(
                 new ValidationErrorResponse(
                         "fail",
@@ -33,9 +34,9 @@ public class GlobalExceptionHandler extends RuntimeException {
     }
 
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ValidationErrorResponse> customException(
-            ResourceNotFoundException ex) {
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ValidationErrorResponse> noSuchElementExceptionHandler(
+            NoSuchElementException ex) {
         return new ResponseEntity<>(
                 new ValidationErrorResponse(
                         "fail",
@@ -48,7 +49,7 @@ public class GlobalExceptionHandler extends RuntimeException {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ValidationErrorResponse> customException1(
+    public ResponseEntity<ValidationErrorResponse> dataIntegrityViolationExceptionHandler(
             DataIntegrityViolationException exception) {
 
         return new ResponseEntity<>(
@@ -63,7 +64,7 @@ public class GlobalExceptionHandler extends RuntimeException {
 
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ValidationErrorResponse> inputParameterValidation(
+    public ResponseEntity<ValidationErrorResponse> paymentFailedExceptionHandler(
             ConstraintViolationException ex) {
 
         return new ResponseEntity<>(
@@ -77,7 +78,7 @@ public class GlobalExceptionHandler extends RuntimeException {
     }
 
     @ExceptionHandler(PaymentFailedException.class)
-    public ResponseEntity<ValidationErrorResponse> inputParameterValidation(
+    public ResponseEntity<ValidationErrorResponse> paymentFailedExceptionHandler(
             PaymentFailedException ex) {
         return new ResponseEntity<>(
                 new ValidationErrorResponse(
@@ -90,7 +91,7 @@ public class GlobalExceptionHandler extends RuntimeException {
     }
 
     @ExceptionHandler(ObjectAlreadyExistsException.class)
-    public ResponseEntity<ValidationErrorResponse> inputParameterValidation(
+    public ResponseEntity<ValidationErrorResponse> objectAlreadyExistsExceptionHandler(
             ObjectAlreadyExistsException ex) {
 
         return new ResponseEntity<>(

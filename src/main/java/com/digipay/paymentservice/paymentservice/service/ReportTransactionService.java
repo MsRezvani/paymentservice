@@ -1,6 +1,5 @@
 package com.digipay.paymentservice.paymentservice.service;
 
-import com.digipay.paymentservice.paymentservice.exception.ResourceNotFoundException;
 import com.digipay.paymentservice.paymentservice.model.Card;
 import com.digipay.paymentservice.paymentservice.model.PaymentProcessorResponse;
 import com.digipay.paymentservice.paymentservice.model.Transaction;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +29,7 @@ public class ReportTransactionService implements IReportTransactionService {
         Card memberCards = cardService.getCardByNumberAndMemberNumber(cardNumber, memberNumber);
         List<Transaction> transactionList =
                 reportTransactionRepository.findByCardAndTransactionDateBetween(memberCards, from, to)
-                                           .orElseThrow(() -> new ResourceNotFoundException("Member with Number : "
+                                           .orElseThrow(() -> new NoSuchElementException("Member with Number : "
                                                                                                     + memberNumber +
                                                                                                     " Haven't any Transaction on Card with Number : " + cardNumber));
         return transactionList.stream()

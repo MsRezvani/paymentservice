@@ -9,13 +9,13 @@ import com.digipay.paymentservice.paymentservice.model.PaymentProcessorResponse;
 import com.digipay.paymentservice.paymentservice.model.Transaction;
 import com.digipay.paymentservice.paymentservice.repository.TransactionRepository;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import static org.hamcrest.MatcherAssert.*;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -25,8 +25,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import static com.digipay.paymentservice.paymentservice.controller.utils.generator.*;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(classes = PaymentServiceApplication.class)
@@ -110,13 +109,14 @@ class ReportTransactionControllerTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE);
 
         mockMvc.perform(request)
-               .andExpect(status().isOk())
-               .andExpect(content().contentType("application/json"))
-               .andExpect(jsonPath("$.*", hasSize(2)))
-               .andExpect(jsonPath("$.SUCCESS.*", hasSize(1)))
-               .andExpect(jsonPath("$.FAILED.*", hasSize(1)))
-               .andExpect(jsonPath("$.SUCCESS[?(@.paymentId == '" + t1.getPaymentId() + "' )]").exists())
-               .andExpect(jsonPath("$.FAILED[?(@.paymentId == '" + t2.getPaymentId() + "' )]").exists());
+                                     .andExpect(status().isOk())
+                                     .andExpect(content().contentType("application/json"))
+                                     .andExpect(jsonPath("$.*", hasSize(2)))
+                                     .andExpect(jsonPath("$.SUCCESS.*", hasSize(1)))
+                                     .andExpect(jsonPath("$.FAILED.*", hasSize(1)))
+                                     .andExpect(jsonPath("$.SrabUCCESS[?(@.paymentId == '" + t1.getPaymentId() + "' )]").exists())
+                                     .andExpect(jsonPath("$.FAILED[?(@.paymentId == '" + t2.getPaymentId() + "' )]").exists())
+                                     .andReturn();
     }
 
     @Test
