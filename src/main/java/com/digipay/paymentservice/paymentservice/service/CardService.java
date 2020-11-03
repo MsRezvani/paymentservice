@@ -117,13 +117,13 @@ public class CardService implements ICardService {
 
     /**
      * private Method to check a member Exists or Not
-     *
+     * if not Illegal Argument Exception will Thrown
      * @param memberNumber
      */
     private void checkMemberExists(Long memberNumber) {
 
         if (!memberService.existsMember(memberNumber))
-            throw new NoSuchElementException("Member with Number : " + memberNumber + " does not exist.");
+            throw new IllegalArgumentException("Member with Number : " + memberNumber + " does not exist.");
     }
 
     /**

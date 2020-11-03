@@ -8,14 +8,19 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends RuntimeException {
 
     @ExceptionHandler(ValidationsException.class)
-    public ResponseEntity<ValidationErrorResponse> validationExceptionHandler(ValidationsException exception) {
+    public ResponseEntity<ValidationErrorResponse> validationExceptionHandler(
+            ValidationsException exception) {
+
         return new ResponseEntity<>(
                 new ValidationErrorResponse(
                         "fail",
@@ -25,7 +30,7 @@ public class GlobalExceptionHandler extends RuntimeException {
                                 .getFieldErrors()
                                 .stream()
                                 .map(it -> it.getField() + ": " + it.getDefaultMessage())
-                                .collect(Collectors.toList() )
+                                .collect(Collectors.toList())
                 )
                 , HttpStatus.BAD_REQUEST);
     }
@@ -34,6 +39,22 @@ public class GlobalExceptionHandler extends RuntimeException {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ValidationErrorResponse> noSuchElementExceptionHandler(
             NoSuchElementException ex) {
+
+        return new ResponseEntity<>(
+                new ValidationErrorResponse(
+                        "fail",
+                        ex.getMessage(),
+                        new Date(),
+                        new ArrayList<>()
+                )
+                , HttpStatus.BAD_REQUEST);
+
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ValidationErrorResponse> noSuchElementExceptionHandler(
+            IllegalArgumentException ex) {
+
         return new ResponseEntity<>(
                 new ValidationErrorResponse(
                         "fail",
@@ -77,6 +98,7 @@ public class GlobalExceptionHandler extends RuntimeException {
     @ExceptionHandler(PaymentFailedException.class)
     public ResponseEntity<ValidationErrorResponse> paymentFailedExceptionHandler(
             PaymentFailedException ex) {
+
         return new ResponseEntity<>(
                 new ValidationErrorResponse(
                         "Payment FAILED",
