@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class ValidationErrorResponse {
+public class ExceptionResponseDTO {
     String status;
     String shortMessage;
     Date date;

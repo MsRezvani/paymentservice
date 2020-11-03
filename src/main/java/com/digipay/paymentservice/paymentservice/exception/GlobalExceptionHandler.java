@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler extends RuntimeException {
 
     @ExceptionHandler(ValidationsException.class)
-    public ResponseEntity<ValidationErrorResponse> validationExceptionHandler(
+    public ResponseEntity<ExceptionResponseDTO> validationExceptionHandler(
             ValidationsException exception) {
 
         return new ResponseEntity<>(
-                new ValidationErrorResponse(
+                new ExceptionResponseDTO(
                         "fail",
                         "Error in Data Entry",
                         new Date(),
@@ -37,11 +37,11 @@ public class GlobalExceptionHandler extends RuntimeException {
 
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ValidationErrorResponse> noSuchElementExceptionHandler(
+    public ResponseEntity<ExceptionResponseDTO> noSuchElementExceptionHandler(
             NoSuchElementException ex) {
 
         return new ResponseEntity<>(
-                new ValidationErrorResponse(
+                new ExceptionResponseDTO(
                         "fail",
                         ex.getMessage(),
                         new Date(),
@@ -52,11 +52,11 @@ public class GlobalExceptionHandler extends RuntimeException {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ValidationErrorResponse> noSuchElementExceptionHandler(
+    public ResponseEntity<ExceptionResponseDTO> noSuchElementExceptionHandler(
             IllegalArgumentException ex) {
 
         return new ResponseEntity<>(
-                new ValidationErrorResponse(
+                new ExceptionResponseDTO(
                         "fail",
                         ex.getMessage(),
                         new Date(),
@@ -67,11 +67,11 @@ public class GlobalExceptionHandler extends RuntimeException {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ValidationErrorResponse> dataIntegrityViolationExceptionHandler(
+    public ResponseEntity<ExceptionResponseDTO> dataIntegrityViolationExceptionHandler(
             DataIntegrityViolationException exception) {
 
         return new ResponseEntity<>(
-                new ValidationErrorResponse(
+                new ExceptionResponseDTO(
                         "fail",
                         exception.getMessage(),
                         new Date(),
@@ -82,11 +82,11 @@ public class GlobalExceptionHandler extends RuntimeException {
 
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ValidationErrorResponse> paymentFailedExceptionHandler(
+    public ResponseEntity<ExceptionResponseDTO> paymentFailedExceptionHandler(
             ConstraintViolationException ex) {
 
         return new ResponseEntity<>(
-                new ValidationErrorResponse(
+                new ExceptionResponseDTO(
                         "fail",
                         ex.getMessage().substring(ex.getMessage().indexOf(":") + 2),
                         new Date(),
@@ -96,11 +96,11 @@ public class GlobalExceptionHandler extends RuntimeException {
     }
 
     @ExceptionHandler(PaymentFailedException.class)
-    public ResponseEntity<ValidationErrorResponse> paymentFailedExceptionHandler(
+    public ResponseEntity<ExceptionResponseDTO> paymentFailedExceptionHandler(
             PaymentFailedException ex) {
 
         return new ResponseEntity<>(
-                new ValidationErrorResponse(
+                new ExceptionResponseDTO(
                         "Payment FAILED",
                         ex.response.getDescription(),
                         new Date(),
@@ -110,11 +110,11 @@ public class GlobalExceptionHandler extends RuntimeException {
     }
 
     @ExceptionHandler(ObjectAlreadyExistsException.class)
-    public ResponseEntity<ValidationErrorResponse> objectAlreadyExistsExceptionHandler(
+    public ResponseEntity<ExceptionResponseDTO> objectAlreadyExistsExceptionHandler(
             ObjectAlreadyExistsException ex) {
 
         return new ResponseEntity<>(
-                new ValidationErrorResponse(
+                new ExceptionResponseDTO(
                         "fail",
                         ex.getMessage(),
                         new Date(),
