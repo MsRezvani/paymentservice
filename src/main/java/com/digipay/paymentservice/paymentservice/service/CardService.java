@@ -39,7 +39,7 @@ public class CardService implements ICardService {
     public List<Card> getMemberCards(Long memberNumber) {
 
         checkMemberExists(memberNumber);
-        return cardRepository.findByMember_MemberNumber(memberNumber)
+        return cardRepository.findByMember_MemberNumberOrderById(memberNumber)
                              .orElseThrow(() -> new NoSuchElementException("Member doesn't have any card."));
     }
 

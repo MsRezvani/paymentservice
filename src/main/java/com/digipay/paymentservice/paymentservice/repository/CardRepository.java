@@ -15,9 +15,9 @@ public interface CardRepository extends JpaRepository<Card, Long> {
     Optional<Card> findByCardNumberAndMember_MemberNumber(String cardNumber,
                                                           Long memberNumber);
 
-    Optional<List<Card>> findByMember_MemberNumber(Long memberNumber);
+    Optional<List<Card>> findByMember_MemberNumberOrderById(Long memberNumber);
 
     @Query("select case when count(c.id)> 0 then true else false end from Card c where c.cardNumber = :cardNumber")
     Boolean existsByCardNumber(@Param("cardNumber") String cardNumber);
-}
 
+}
