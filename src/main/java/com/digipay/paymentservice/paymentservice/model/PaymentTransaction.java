@@ -18,8 +18,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_transaction")
-public class Transaction {
+@Table(name = "tbl_payment_transaction")
+public class PaymentTransaction {
     @JsonProperty("payment_code")
     @Column(name = "payment_id", unique = true, nullable = false)
     private Long paymentId;
@@ -42,23 +42,4 @@ public class Transaction {
     @JsonIgnore
     @ManyToOne
     private Card card;
-
-    public Transaction(Card sourceCard,
-                       PaymentDetails details,
-                       PaymentProcessorResponse response
-    ) {
-
-        LocalDate localDate = LocalDate.now();
-        this.transactionDate   = Integer.valueOf(String.valueOf(localDate.getYear()) +
-                                                             String.valueOf(localDate.getMonthValue()) +
-                                                             String.valueOf(localDate.getDayOfMonth()));
-        this.amountTransaction = details.getAmount();
-        this.description           = response.getDescription();
-        this.destinationCardNumber = details.getDest();
-        this.paymentId             = response.getPaymentId();
-        this.result            = response.getPaymentResponseStatus();
-        this.card              = sourceCard;
-
-    }
-
 }

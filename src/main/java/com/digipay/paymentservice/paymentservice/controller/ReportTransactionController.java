@@ -2,9 +2,8 @@ package com.digipay.paymentservice.paymentservice.controller;
 
 
 import com.digipay.paymentservice.paymentservice.service.IReportTransactionService;
-import com.digipay.paymentservice.paymentservice.service.ReportTransactionService;
 import com.digipay.paymentservice.paymentservice.model.PaymentProcessorResponse;
-import com.digipay.paymentservice.paymentservice.model.Transaction;
+import com.digipay.paymentservice.paymentservice.model.PaymentTransaction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +25,7 @@ public class ReportTransactionController {
     private final IReportTransactionService reportsService;
 
     @GetMapping
-    public ResponseEntity<Map<PaymentProcessorResponse.PaymentResponseStatus, List<Transaction>>> getMemberCarts(
+    public ResponseEntity<Map<PaymentProcessorResponse.PaymentResponseStatus, List<PaymentTransaction>>> getMemberCarts(
             @PathVariable("memberNumber") Long memberNumber,
             @PathVariable("cartNumber") String cartNumber,
             @RequestParam("from") Integer from,
