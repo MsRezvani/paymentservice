@@ -73,7 +73,6 @@ class ReportTransactionControllerTest {
                              .amountTransaction(new BigDecimal(2500))
                              .description("Transaction is Completed.")
                              .paymentId(generateNumber())
-                             .transactionCode(UUID.randomUUID())
                              .transactionDate(990203)
                              .destinationCardNumber(generateCardNumbers())
                              .build();
@@ -83,7 +82,6 @@ class ReportTransactionControllerTest {
                              .amountTransaction(new BigDecimal(generateNumber()))
                              .description("Transaction is Failed.")
                              .paymentId(generateNumber())
-                             .transactionCode(UUID.randomUUID())
                              .transactionDate(990203)
                              .destinationCardNumber(generateCardNumbers())
                              .build();
