@@ -20,7 +20,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "tbl_transaction")
 public class Transaction {
-
+    @JsonProperty("payment_code")
     @Column(name = "payment_id", unique = true, nullable = false)
     private Long paymentId;
     @JsonIgnore

@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -28,7 +25,7 @@ public class GlobalExceptionHandler extends RuntimeException {
                                 .getFieldErrors()
                                 .stream()
                                 .map(it -> it.getField() + ": " + it.getDefaultMessage())
-                                .collect(Collectors.toList())
+                                .collect(Collectors.toList() )
                 )
                 , HttpStatus.BAD_REQUEST);
     }

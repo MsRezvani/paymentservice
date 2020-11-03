@@ -102,7 +102,6 @@ public class CardService implements ICardService {
     public PaymentProcessorResponse transfer(Long memberNumber,
                                              final PaymentDetails paymentDetails) {
 
-        checkMemberExists(memberNumber);
         Card sourceCard = getCardByNumberAndMemberNumber(paymentDetails.getSource(), memberNumber);
         final PaymentProcessorResponse response = gateway.transfer(paymentDetails);
         if (response.getPaymentResponseStatus() == PaymentProcessorResponse.PaymentResponseStatus.SUCCESS) {
